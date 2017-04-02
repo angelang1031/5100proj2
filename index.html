@@ -20,8 +20,8 @@
 		var height = "500";
 		
 		// scales
-		var sqrtScale = d3.scaleSqrt().domain([0, 500]).range([20, 180]);
-		var strokeScale = d3.scaleLinear().domain([0, 53]).range([1, 20]);
+		var employeesScale = d3.scaleSqrt().domain([0, 5000]).range([20, 500]);
+		var companiesScale = d3.scaleLinear().domain([0, 53]).range([.2, 24]);
 		
 		/* BEGIN FIGURE 3 */
 		
@@ -51,14 +51,14 @@
 			.attr("cx", widthFloat/2)
 			.attr("cy", height/2)
 			.attr("fill", "none")
-			.attr("stroke", "steelblue");
-			
-			f3.selectAll("circle")
+			.attr("stroke", "steelblue")
 			.attr("r", function(d) {
-				return sqrtScale(parseFloat(d.key));
+				// employee size
+				return employeesScale(parseFloat(d.key));
 			})
 			.attr("stroke-width", function(d) {
-				return strokeScale(d.values.length);
+				// number of companies
+				return companiesScale(d.values.length);
 			});
 			
 		});
