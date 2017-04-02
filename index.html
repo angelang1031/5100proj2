@@ -77,16 +77,21 @@
 			function showData(d) {
 				//companies
 				f3.append("text")
-				.html(
+				.text(
 					function() {
 						var companies = [];
 						d.values.forEach(function(c){
 							companies.push(c.Name);
 						});
-						return companies.join("\r\n<br/>");
-					})
-				.attr("fill", "steelblue")
-				.attr("transform", "translate(40,40)");
+						companies.forEach(function(i) {
+							f3.append("text")
+							.text(i)
+							.attr("x", "0")
+							.attr("y", companies.indexOf(i)*16)
+							.attr("fill", "steelblue")
+							.attr("transform", "translate(10,20)");
+						})
+					});
 				//employees
 				labels.append("text")
 				.text(d.key)
