@@ -71,19 +71,24 @@
 			.attr("transform", "translate("+widthFloat/2+","+height/2+")");
 			
 			function showEmployees(d) {
-				console.log(d.key);
+				console.log(employeesScale(-d.key));
 				labels.append("text")
 				.text(d.key)
-				.attr("x", employeesScale(d.key)+companiesScale(d.values.length)
-				)
-				.attr("y", "0")
-				.attr("z-index","99999999")
-				.attr("fill", "steelblue")
-				.attr("alignment-baseline","middle");
+				.attr("x", -employeesScale(d.key)+companiesScale(d.values.length))
+				.attr("y", "-2")
+				.attr("fill", "steelblue");
+//				.attr("alignment-baseline","middle");
+				labels.append("line")
+				.style("stroke", "steelblue")
+				.attr("x1", -employeesScale(d.key))
+				.attr("y1","0")
+				.attr("x2", "0")
+				.attr("y2", "0");
 			}
 			
 			function hideEmployees(d) {
 				labels.selectAll("text").remove();
+				labels.selectAll("line").remove();
 			}
 			
 			
