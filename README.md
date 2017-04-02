@@ -1,5 +1,6 @@
 # 5100proj2
 D3 Startup Data Visualization
+
 __About:__
 An interactive data visualization about the top U.S. startups, where they are located, who runs them, and how many people are behind them. The data used in this project was collected from angel.co.
 
