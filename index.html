@@ -1,20 +1,74 @@
 <html>
 <head>
-<title></title>
-<link href="https://fonts.googleapis.com/css?family=Alegreya|Alegreya+Sans" rel="stylesheet">
-<style>
-body { font-family: 'Alegreya Sans', Calibri, sans-serif; }
-</style>
+	<title>Startup Data Visualization - Angela Hu, Val Mack, Rong Wu</title>
+	<link rel="stylesheet" href="main.css"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="http://d3js.org/topojson.v2.min.js"></script>
 </head>
 <body>
-<h3>INFO/CS 3300; INFO 5100 - Data-driven Web Pages</h3>
-<p>
-Look for information on the <a href="https://mimno.infosci.cornell.edu/info3300/">Course website</a>.
-
-If you haven't yet, sign up for <a href="https://piazza.com/cornell/spring2017/infocs3300">Piazza</a>.
-</p>
-
-<p>
-</p>
+	<div class="intro">
+		<h1>Startups 2017</h1>
+		<hr/>
+	</div>
+	<div class="main">
+		<svg id="fig3"></svg>
+	</div>
+	<script>
+		// globals
+		var width = "95%";
+		var height = "500";
+		
+		// scales
+		var sqrtScale = d3.scaleSqrt().domain([0, 500]).range([20, 180]);
+		var strokeScale = d3.scaleLinear().domain([0, 53]).range([1, 20]);
+		
+		/* BEGIN FIGURE 3 */
+		
+		var rawData;
+		var companiesBySize;
+		
+		function parse(row) {
+			var dash = row.Employees.indexOf("-");
+			row.Employees = +row.Employees.slice(dash+1);
+			return row;
+		}
+		
+		// load data
+		d3.csv("100companies_employees.csv", parse, function (error, data) {
+			if (error) { console.log(error); }
+			
+			rawData = data;
+			
+			companiesBySize = d3.nest()
+			.key(function (d) { return d.Employees; })
+			.entries(rawData);
+			
+			f3.selectAll("circle")
+			.data(companiesBySize)
+			.enter()
+			.append("circle")
+			.attr("cx", widthFloat/2)
+			.attr("cy", height/2)
+			.attr("fill", "none")
+			.attr("stroke", "steelblue");
+			
+			f3.selectAll("circle")
+			.attr("r", function(d) {
+				return sqrtScale(parseFloat(d.key));
+			})
+			.attr("stroke-width", function(d) {
+				return strokeScale(d.values.length);
+			});
+			
+		});
+		
+		var f3 = d3.select("#fig3").attr("width", width).attr("height", height);
+		
+		var widthFloat = parseFloat(f3.style("width"));
+		
+		
+		
+	</script>
 </body>
 </html>
