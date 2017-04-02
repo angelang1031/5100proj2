@@ -5,6 +5,10 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="http://d3js.org/topojson.v2.min.js"></script>
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
 </head>
 <body>
 	<div class="intro">
@@ -64,20 +68,32 @@
 				// number of companies
 				return companiesScale(d.values.length);
 			})
-			.on("mouseover", showEmployees)
-			.on("mouseout", hideEmployees);
+			.on("mouseover", showData)
+			.on("mouseout", hideData);
 			
 			var labels = f3.append("g")
 			.attr("transform", "translate("+widthFloat/2+","+height/2+")");
 			
-			function showEmployees(d) {
-				console.log(employeesScale(-d.key));
+			function showData(d) {
+				//companies
+				f3.append("text")
+				.html(
+					function() {
+						var companies = [];
+						d.values.forEach(function(c){
+							companies.push(c.Name);
+						});
+						return companies.join("\r\n<br/>");
+					})
+				.attr("fill", "steelblue")
+				.attr("transform", "translate(40,40)");
+				//employees
 				labels.append("text")
 				.text(d.key)
 				.attr("x", -employeesScale(d.key)+companiesScale(d.values.length))
 				.attr("y", "-2")
 				.attr("fill", "steelblue");
-//				.attr("alignment-baseline","middle");
+				//radius
 				labels.append("line")
 				.style("stroke", "steelblue")
 				.attr("x1", -employeesScale(d.key))
@@ -86,25 +102,11 @@
 				.attr("y2", "0");
 			}
 			
-			function hideEmployees(d) {
+			function hideData(d) {
+				f3.selectAll("text").remove();
 				labels.selectAll("text").remove();
 				labels.selectAll("line").remove();
 			}
-			
-			
-//			labels.selectAll("text")
-//			.data(companiesBySize)
-//			.enter()
-//			.append("text")
-//			.text(function(d) {
-//				return d.key;
-//			})
-//			.attr("x", function(d) {
-//				return employeesScale(d.key)+companiesScale(d.values.length);
-//			})
-//			.attr("y", "0")
-//			.attr("fill", "steelblue")
-//			.attr("alignment-baseline","middle");
 			
 		});
 		
