@@ -19,7 +19,11 @@ h1,h2,h3,h4 {
 }
 
 svg {
-	margin: 0 auto;
-	display: block;
-	border: 1px gray solid;
+/*	border: 1px gray solid;*/
+}
+
+.info {
+	width: 20%;
+	margin: 0 2%;
+	float: left;
 }
