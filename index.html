@@ -1,8 +1,9 @@
 <html>
 <head>
-	<title>Startup Data Visualization - Angela Hu, Val Mack, Rong Wu</title>
+	<title>Startup Data Visualization - Angela Wu, Val Mack, Rong Hu</title>
 	<link rel="stylesheet" href="main.css"/>
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+	<script src="uStates.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="http://d3js.org/topojson.v2.min.js"></script>
 	<script
@@ -16,6 +17,24 @@
 		<hr/>
 	</div>
 	<div class="main">
+		<div class="fig1">
+			<div class="info">
+				<h3>Locations, Fund & Industry </h3>
+				<div>Startup Industries:<br/>
+				<select id="select-list">
+				  <option value="v1">E-Commerce</option> 
+				  <option value="v2">Education</option>
+				  <option value="v3">Enterprise Software</option>
+				  <option value="v4">Game</option>
+				</select>
+				</div>
+				<h4>The majority of startups locate at California and New York.</h4>
+				<p>The map shows the location and fund distributions of the top 100 statups in the specific industry. The colors represent the total fund that the startups raise. The deeper the color is, the more fund the startups raise. In the tag of each state, it provide info about the count of startups and the fund percentages in the total fund of this industry. </p>			
+			</div>
+			<div id="tooltip"></div><!-- div to hold tooltip. -->
+			<svg width="75%" height="600" viewBox="0 0 960 600" id="fig1"></svg>
+		</div>
+
 		<div class="fig3">
 			<div class="info">
 				<h3>SIZE</h3>
@@ -25,17 +44,80 @@
 			<svg id="fig3"></svg>
 		</div>
 	</div>
+
+	
 	<script>
 		// globals
 		var width = "75%";
 		var height = "500";
 		var backgroundColor = "#f5f5f5";
 		
+
+		/* BEGIN FIGURE 1 */
+		//http://htmlcolorcodes.com/
+		var colors = [["#FEF9E7", "#F1C40F"], ["#FDEDEC", "#E74C3C"], ["#EBF5FB", "#3498DB"], ["#EAFAF1", "#28B463"], ["#F4ECF7", "#8E44AD"], ["#FEF5E7", "#F39C12"]];
+		var indData = ["ec.csv", "edu.csv", "es.csv", "game.csv"];
+		var isFirst = true;
+
+		var data = getData(0);
+
+		d3.select("#select-list").on("change", function(){
+			var selectedIndex = d3.event.target.selectedIndex;
+
+			data = getData(selectedIndex);
+		});
+
+		function getData(k) {
+			d3.csv(indData[k], function (error, rawData) {
+			if (error) { console.log(error); }
+
+			var temp = rawData;
+			var sampleData ={};
+
+			var maxRevenue = d3.max(temp, function(d){return +d.Revenue;});
+			var minRevenue = d3.min(temp, function(d){
+				if (+d.Revenue > 0) return +d.Revenue;
+				else return maxRevenue;
+			});
+			var sumRevenue = d3.sum(temp, function(d){return +d.Revenue;});
+			var range = minRevenue*0.8;
+
+			temp.forEach(function(d){ 
+				var count=+d.Count, 
+					revenue=+d.Revenue;
+				sampleData[d.State]={count:count, revenue:revenue/sumRevenue, 
+						color:d3.interpolate(colors[k][0], colors[k][1])(Math.max((Math.log(revenue+range)-Math.log(minRevenue))/(Math.log(maxRevenue+range)-Math.log(minRevenue)), 
+							(Math.log(minRevenue+range)-Math.log(minRevenue))/(Math.log(maxRevenue+range)-Math.log(minRevenue))))}; 
+			});
+			console.log(sampleData);
+			if (isFirst) {
+				uStates.draw("#fig1", sampleData, tooltipHtml);
+				isFirst = false;
+			} else {
+				d3.select("#fig1").selectAll(".state").style("fill",function(d){ return sampleData[d.id].color; }).on("mouseover", mouseOver);
+
+			    function mouseOver(d){
+				d3.select("#tooltip").transition().duration(200).style("opacity", .9);      
+				
+				d3.select("#tooltip").html(tooltipHtml(d.n, sampleData[d.id]))  
+					.style("left", (d3.event.pageX) + "px")     
+					.style("top", (d3.event.pageY - 28) + "px");
+		        }
+			}
+			});
+		}
+
+		function tooltipHtml(n, d){	/* function to create html content string in tooltip div. */
+			return "<h4>"+n+"</h4><table>"+
+				"<tr><td>Count</td><td>"+(d.count)+"</td></tr>"+
+				"<tr><td>Revenue</td><td>"+((d.revenue*100).toFixed(2)+"%")+"</td></tr>"
+				"</table>";
+		}
+		
+		/* BEGIN FIGURE 3 */
 		// scales
 		var employeesScale = d3.scaleSqrt().domain([0, 5000]).range([20, 400]);
 		var companiesScale = d3.scaleLinear().domain([0, 53]).range([.2, 24]);
-		
-		/* BEGIN FIGURE 3 */
 		
 		var f3 = d3.select("#fig3").attr("width", width).attr("height", height).append("g").attr("transform", "translate(80,0)");
 		
