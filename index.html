@@ -48,11 +48,11 @@
 				</select>
 				</div>
 				<h4>Top Startup talent sources: UC Berkeley, Standford University, Google, and Microsoft.</h4>
-				<p>The graph not only shows the components of our startup data based on total funding raised, but also shows the number of startups with team members from top universities or companies.</p> 
+				<p>The graph shows the number of startups with team members from a certain top university or major company, as well as the composition of total startups based on total funding raised.</p> 
 				<p>The <span>depth</span> of the rectangle represents the number of startups.</p>
-				<p>Pay attention to the "Sources". Universities are classified into two categories: east and west coasts, and companies are grouped into three industries. All are represented with different <span>colors</span>.</p>
-				<p><span>Click</span> to see all all the links!<br>
-				   <span>Hover</span> to see all details!</p>
+				<p>Pay attention to the " Team Source". Universities are classified into two categories: east and west coasts, and companies are grouped into three industries. Each category is represented with different <span>colors</span>.</p>
+				<p><span>Click</span> to see all all the links.<br>
+				   <span>Hover</span> to see all details.</p>
 
 			</div>
 			<div id="title"></div>
@@ -311,7 +311,8 @@
 			  		.data(inputInfo).enter()
 			  		.append("rect")
 			  		.attr("x",function(d,i){
-			  		return 900 -40-40-140*(inputInfo.length-i-1);})
+			  		//return 900 -40-40-140*(inputInfo.length-i-1)
+			  		return 70 + 180*i;})
 			  		.attr("y",750)
 			  		.attr("width",40)
 			  		.attr("height",20)
@@ -325,7 +326,8 @@
 			  		.attr("font-size", 13)
 			  		.attr("y",800)
 			  		.attr("x", function(d,i)
-			  						{return 900 -60-140*(inputInfo.length-i-1);});
+			  						{//return 900 -60-140*(inputInfo.length-i-1)
+			  						 return 90 + 180*i;});
         	}
 
         	//show legend
@@ -335,7 +337,7 @@
         	
 
     		// add category labels
-    		var labels = ["Total Startups", "Funding Status", "Team from"];
+    		var labels = ["Team Source", "Funding Status", "Total Startups"];
 
     		var label = svg_uni.append("g").selectAll(".label")
     					.data(labels).enter()
