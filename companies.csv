@@ -1,0 +1,118 @@
+source,target,value
+t_total,t_less than 10M,28971
+t_total,t_10M to 20M,3213
+t_total,t_20M to 30M,1508
+t_total,t_30M to 40M,1340
+t_total,t_40M to 50M,552
+t_total,t_50M to 60M,552
+t_total,t_60M to 72M,452
+t_total,t_72M to 83M,331
+t_total,t_83M to 100M,414
+t_less than 10M,i_Microsoft,602
+t_less than 10M,i_Google,429
+t_less than 10M,i_IBM,438
+t_less than 10M,i_Oracle,252
+t_less than 10M,i_Apple,248
+t_less than 10M,i_Facebook,142
+t_less than 10M,c_Mckinsey&Company,197
+t_less than 10M,i_Intel,133
+t_less than 10M,f_Goldman Sachs,157
+t_less than 10M,f_Morgan Stanley,163
+t_less than 10M,c_Deloitte Consulting,160
+t_less than 10M,i_Amazon,69
+t_10M to 20M,i_Microsoft,164
+t_10M to 20M,i_Google,134
+t_10M to 20M,i_IBM,104
+t_10M to 20M,i_Oracle,107
+t_10M to 20M,i_Apple,82
+t_10M to 20M,i_Facebook,56
+t_10M to 20M,c_Mckinsey&Company,45
+t_10M to 20M,i_Intel,40
+t_10M to 20M,f_Goldman Sachs,36
+t_10M to 20M,f_Morgan Stanley,25
+t_10M to 20M,c_Deloitte Consulting,22
+t_10M to 20M,i_Amazon,19
+t_20M to 30M,i_Microsoft,73
+t_20M to 30M,i_Google,79
+t_20M to 30M,i_IBM,83
+t_20M to 30M,i_Oracle,54
+t_20M to 30M,i_Apple,46
+t_20M to 30M,i_Facebook,28
+t_20M to 30M,c_Mckinsey&Company,30
+t_20M to 30M,i_Intel,27
+t_20M to 30M,f_Goldman Sachs,14
+t_20M to 30M,f_Morgan Stanley,18
+t_20M to 30M,c_Deloitte Consulting,17
+t_20M to 30M,i_Amazon,12
+t_30M to 40M,i_Microsoft,92
+t_30M to 40M,i_Google,80
+t_30M to 40M,i_IBM,62
+t_30M to 40M,i_Oracle,46
+t_30M to 40M,i_Apple,49
+t_30M to 40M,i_Facebook,34
+t_30M to 40M,c_Mckinsey&Company,26
+t_30M to 40M,i_Intel,20
+t_30M to 40M,f_Goldman Sachs,14
+t_30M to 40M,f_Morgan Stanley,18
+t_30M to 40M,c_Deloitte Consulting,15
+t_30M to 40M,i_Amazon,14
+t_40M to 50M,i_Microsoft,46
+t_40M to 50M,i_Google,45
+t_40M to 50M,i_IBM,20
+t_40M to 50M,i_Oracle,24
+t_40M to 50M,i_Apple,18
+t_40M to 50M,i_Facebook,11
+t_40M to 50M,c_Mckinsey&Company,4
+t_40M to 50M,i_Intel,10
+t_40M to 50M,f_Goldman Sachs,8
+t_40M to 50M,f_Morgan Stanley,6
+t_40M to 50M,c_Deloitte Consulting,8
+t_40M to 50M,i_Amazon,3
+t_50M to 60M,i_Microsoft,42
+t_50M to 60M,i_Google,33
+t_50M to 60M,i_IBM,20
+t_50M to 60M,i_Oracle,19
+t_50M to 60M,i_Apple,16
+t_50M to 60M,i_Facebook,21
+t_50M to 60M,c_Mckinsey&Company,10
+t_50M to 60M,i_Intel,17
+t_50M to 60M,f_Goldman Sachs,8
+t_50M to 60M,f_Morgan Stanley,11
+t_50M to 60M,c_Deloitte Consulting,6
+t_50M to 60M,i_Amazon,5
+t_60M to 72M,i_Microsoft,35
+t_60M to 72M,i_Google,42
+t_60M to 72M,i_IBM,29
+t_60M to 72M,i_Oracle,28
+t_60M to 72M,i_Apple,23
+t_60M to 72M,i_Facebook,18
+t_60M to 72M,c_Mckinsey&Company,10
+t_60M to 72M,i_Intel,18
+t_60M to 72M,f_Goldman Sachs,11
+t_60M to 72M,f_Morgan Stanley,11
+t_60M to 72M,c_Deloitte Consulting,8
+t_60M to 72M,i_Amazon,2
+t_72M to 83M,i_Microsoft,25
+t_72M to 83M,i_Google,23
+t_72M to 83M,i_IBM,15
+t_72M to 83M,i_Oracle,9
+t_72M to 83M,i_Apple,15
+t_72M to 83M,i_Facebook,10
+t_72M to 83M,c_Mckinsey&Company,3
+t_72M to 83M,i_Intel,7
+t_72M to 83M,f_Goldman Sachs,9
+t_72M to 83M,f_Morgan Stanley,3
+t_72M to 83M,c_Deloitte Consulting,2
+t_72M to 83M,i_Amazon,0
+t_83M to 100M,i_Microsoft,36
+t_83M to 100M,i_Google,38
+t_83M to 100M,i_IBM,24
+t_83M to 100M,i_Oracle,25
+t_83M to 100M,i_Apple,18
+t_83M to 100M,i_Facebook,15
+t_83M to 100M,c_Mckinsey&Company,9
+t_83M to 100M,i_Intel,13
+t_83M to 100M,f_Goldman Sachs,13
+t_83M to 100M,f_Morgan Stanley,9
+t_83M to 100M,c_Deloitte Consulting,12
+t_83M to 100M,i_Amazon,11
