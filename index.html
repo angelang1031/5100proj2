@@ -13,14 +13,15 @@
 </head>
 <body>
 	<div class="intro">
-		<h1>Startups 2017</h1>
+		<h1>US Startups 2017</h1>
+		<p>INFO 5100 Project 2 <br>Angela Wu, Rong Hu and Val Mack</p>
 		<hr/>
 	</div>
 	<div class="main">
 		<div class="fig1">
 			<div class="info">
-				<h3>Locations, Fund & Industry </h3>
-				<div>Startup Industries:<br/>
+				<h3>Location, Fund & Market </h3>
+				<div>Key Markets:<br/>
 				<select id="select-list">
 				  <option value="v1">E-Commerce</option> 
 				  <option value="v2">Education</option>
@@ -28,8 +29,8 @@
 				  <option value="v4">Game</option>
 				</select>
 				</div>
-				<h4>The majority of startups locate at California and New York.</h4>
-				<p>The map shows the location and fund distributions of the top 100 statups in the specific industry. The colors represent the total fund that the startups raise. The deeper the color is, the more fund the startups raise. In the tag of each state, it provide info about the count of startups and the fund percentages in the total fund of this industry. </p>			
+				<h4>Startups at California and New York raise the majority of funding in each key market. </h4>
+				<p>The map shows the location and fund distributions of the top 100 statups in the specific key market. The colors represent the total fund that the startups raise. The deeper the color is, the more fund the startups raise. In the tag of each state, it provide info about the number of startups and the fund they raised. <br><br>* Due to the limitations of data resource, we only visualized top 100 startups in each key market.</p>			
 			</div>
 			<div id="tooltip"></div><!-- div to hold tooltip. -->
 			<svg width="75%" height="600" viewBox="0 0 960 600" id="fig1"></svg>
@@ -55,7 +56,7 @@
 
 		/* BEGIN FIGURE 1 */
 		//http://htmlcolorcodes.com/
-		var colors = [["#FEF9E7", "#F1C40F"], ["#FDEDEC", "#E74C3C"], ["#EBF5FB", "#3498DB"], ["#EAFAF1", "#28B463"], ["#F4ECF7", "#8E44AD"], ["#FEF5E7", "#F39C12"]];
+		var colors = [["#EBF5FB", "#AED6F1", "#1B4F72"], ["#EAFAF1", "#ABEBC6", "#186A3B"], ["#FEF9E7", "#F9E79F", "#7D6608"], ["#FDEDEC", "#F5B7B1", "#78281F"]];
 		var indData = ["ec.csv", "edu.csv", "es.csv", "game.csv"];
 		var isFirst = true;
 
@@ -75,21 +76,20 @@
 			var sampleData ={};
 
 			var maxRevenue = d3.max(temp, function(d){return +d.Revenue;});
-			var minRevenue = d3.min(temp, function(d){
-				if (+d.Revenue > 0) return +d.Revenue;
-				else return maxRevenue;
-			});
-			var sumRevenue = d3.sum(temp, function(d){return +d.Revenue;});
-			var range = minRevenue*0.8;
+
+			var findColor = function(revenue) {
+				if (revenue == 0) {
+					return colors[k][0];
+				} else {
+					return d3.interpolate(colors[k][1], colors[k][2])(revenue/maxRevenue)}; 
+			}
 
 			temp.forEach(function(d){ 
 				var count=+d.Count, 
 					revenue=+d.Revenue;
-				sampleData[d.State]={count:count, revenue:revenue/sumRevenue, 
-						color:d3.interpolate(colors[k][0], colors[k][1])(Math.max((Math.log(revenue+range)-Math.log(minRevenue))/(Math.log(maxRevenue+range)-Math.log(minRevenue)), 
-							(Math.log(minRevenue+range)-Math.log(minRevenue))/(Math.log(maxRevenue+range)-Math.log(minRevenue))))}; 
+				sampleData[d.State]={count:count, revenue:revenue, color: findColor(revenue)}	
 			});
-			console.log(sampleData);
+
 			if (isFirst) {
 				uStates.draw("#fig1", sampleData, tooltipHtml);
 				isFirst = false;
@@ -108,10 +108,17 @@
 		}
 
 		function tooltipHtml(n, d){	/* function to create html content string in tooltip div. */
-			return "<h4>"+n+"</h4><table>"+
+			if (d.revenue == 0) {
+				return "<h4>"+n+"</h4><table>"+
 				"<tr><td>Count</td><td>"+(d.count)+"</td></tr>"+
-				"<tr><td>Revenue</td><td>"+((d.revenue*100).toFixed(2)+"%")+"</td></tr>"
+				"<tr><td>Funding</td><td>"+("$"+(0))+"</td></tr>"
 				"</table>";
+			} else {
+				return "<h4>"+n+"</h4><table>"+
+				"<tr><td>Count</td><td>"+(d.count)+"</td></tr>"+
+				"<tr><td>Funding</td><td>"+("$"+(d.revenue/1000000).toFixed(0)+"M")+"</td></tr>"
+				"</table>";
+			}
 		}
 		
 		/* BEGIN FIGURE 3 */
