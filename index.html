@@ -32,13 +32,15 @@
 				  <option value="v4">Game</option>
 				</select>
 				</div>
-				<h4>Startups at California and New York raise the majority of funding in each key market. </h4>
-				<p>The map shows the location and fund distributions of the top 100 statups in the specific key market. The colors represent the total fund that the startups raise. The deeper the color is, the more fund the startups raise. In the tag of each state, it provide info about the number of startups and the fund they raised. <br><br>* Due to the limitations of data resource, we only visualized top 100 startups in each key market.</p>			
+				<h4>Startups at California and New York raise at least 70% of funding in each key market. Most of the funding of these two states are given to Enterprise Software market. Game startups are centered in a small number of states while other markets are more widely spread across US. </h4>
+				<p>The map shows the location and fund distributions of the top 100 statups in the specific key market. The colors represent the total fund that the startups raise. The pie graph shows the funding distributions among key markets in each state.<br><br></p>	
+				<svg width="200" height="200" viewBox="0 0 200 200" id="fig1c"></svg>		
 			</div>
 			<div id="tooltip"></div><!-- div to hold tooltip. -->
-			<svg width="75%" height="600" viewBox="0 0 960 600" id="fig1"></svg>
-		</div>
+			<svg width="75%" height="700" viewBox="0 0 960 600" id="fig1">
+			</svg>	
 
+		</div>
 		<div id="fig2">
 			<div class="info">
 				<h3>Startup Talent Sources</h3>
@@ -80,7 +82,7 @@
 
 		/* BEGIN FIGURE 1 */
 		//http://htmlcolorcodes.com/
-		var colors = [["#EBF5FB", "#AED6F1", "#1B4F72"], ["#EAFAF1", "#ABEBC6", "#186A3B"], ["#FEF9E7", "#F9E79F", "#7D6608"], ["#FDEDEC", "#F5B7B1", "#78281F"]];
+		var colors = [["#EBF5FB", "#AED6F1", "#21618C", "#1B4F72"], ["#EAFAF1", "#ABEBC6", "#1D8348", "#186A3B"], ["#FEF9E7", "#F9E79F", "#9A7D0A", "#7D6608"], ["#FDEDEC", "#F5B7B1", "#943126", "#78281F"]];
 		var indData = ["ec.csv", "edu.csv", "es.csv", "game.csv"];
 		var isFirst = true;
 
@@ -94,18 +96,29 @@
 
 		function getData(k) {
 			d3.csv(indData[k], function (error, rawData) {
+				d3.csv("market.csv", function(error, data) {
 			if (error) { console.log(error); }
 
 			var temp = rawData;
+			var data = data;
 			var sampleData ={};
 
 			var maxRevenue = d3.max(temp, function(d){return +d.Revenue;});
 
+			var secondRevenue = d3.max(temp, function(d){
+				if (+d.Revenue !=  maxRevenue) {
+					return +d.Revenue;
+				} else return 0;
+			});
+
 			var findColor = function(revenue) {
 				if (revenue == 0) {
 					return colors[k][0];
+				} else if (revenue == maxRevenue) {
+					return colors[k][3];
 				} else {
-					return d3.interpolate(colors[k][1], colors[k][2])(revenue/maxRevenue)}; 
+					return d3.interpolate(colors[k][1], colors[k][2])(revenue/secondRevenue); 
+				} 
 			}
 
 			temp.forEach(function(d){ 
@@ -117,7 +130,12 @@
 			if (isFirst) {
 				uStates.draw("#fig1", sampleData, tooltipHtml);
 				isFirst = false;
+				mousefunc();
 			} else {
+				mousefunc();
+			}
+
+			function mousefunc() {
 				d3.select("#fig1").selectAll(".state").style("fill",function(d){ return sampleData[d.id].color; }).on("mouseover", mouseOver);
 
 			    function mouseOver(d){
@@ -126,8 +144,66 @@
 				d3.select("#tooltip").html(tooltipHtml(d.n, sampleData[d.id]))  
 					.style("left", (d3.event.pageX) + "px")     
 					.style("top", (d3.event.pageY - 28) + "px");
-		        }
+
+				drawCircle(d.id);
+		        } 
 			}
+
+			var drawCircle = function(state) {
+
+				var width = 200,
+				    height = 200,
+				    radius = Math.min(width, height) / 2;
+
+				var color = ["#5DADE2", "#58D68D", "#F4D03F", "#EC7063"];
+
+				var arc = d3.arc()
+				    .outerRadius(radius - 10)
+				    .innerRadius(radius - 70);
+
+				var pie = d3.pie()
+				    .sort(null)
+				    .value(function(d) { return +d[state]; });
+
+				var svg = d3.select("#fig1c");
+				svg.selectAll("*").remove();
+
+				var svg = d3.select("#fig1c").append("svg")
+				    .attr("width", width)
+				    .attr("height", height)
+				    .append("g")
+				    .attr("transform", "translate(" + width / 2 + "," + (height + 10) / 2 + ")");
+
+				var name = function(d) {
+					if (d.data[state] == 0) return "";
+					return d.data.State;
+				}
+
+				  var g = svg.selectAll(".arc")
+				      .data(pie(data))
+				      .enter().append("g")
+				      .attr("class", "arc");
+
+				  g.append("path")
+				      .attr("d", arc)
+				      .style("fill", function(d, i) { return color[i]; });
+
+				  svg.append("text")
+			        .attr("x", 0)             
+			        .attr("y", -95)
+			        .attr("text-anchor", "middle")  
+			        .style("font-size", "12px") 
+			        .text("Funding distribution of " + state);
+
+				  g.append("text")
+				      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+				      .attr("dy", ".35em")
+				      .style("font-size", "9px")
+				      .text(function(d) { 
+				      	return name(d); 
+				      });
+				}
+			});
 			});
 		}
 
