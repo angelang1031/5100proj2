@@ -360,7 +360,9 @@
                       		d3.select("#title").transition().duration(200).style("opacity", .9);      
       
             				d3.select("#title").html(function (){
-            					return "Number of Startups: " + format(d.value);});
+            					return "Number of Startups: " + format(d.value);})
+            				  .style("left", (d3.event.pageX) + "px")     
+              	              .style("top", (d3.event.pageY - 28) + "px");
             		});
 
             // add link titles **
