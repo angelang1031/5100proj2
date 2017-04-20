@@ -389,12 +389,28 @@
 		function parse(row) {
 			if (row.Employees) {
 				var dash = row.Employees.indexOf("-");
+				console.log(row.Employees);
 				row.Employees = parseFloat(row.Employees.slice(dash+1));
 				return row;
 			}
 		}
 		
+		// test load
+		var testData, testBySize;
+		
+		d3.csv("100companies_employees.csv", function(error, data) {
+			if (error) { console.log(error); }
+			
+			testData = data;
+			
+			testBySize = d3.nest()
+			.key(function(d) {return d.Employees;})
+			.entries(testData);
+			
+		});
+		
 		// load data
+		
 		d3.csv("100companies_employees.csv", parse, function (error, data) {
 			if (error) { console.log(error); }
 			
@@ -404,7 +420,7 @@
 			.key(function (d) { return d.Employees; })
 			.entries(rawData);
 			
-			f3.selectAll("circle")
+			var circles = f3.selectAll("circle")
 			.data(companiesBySize)
 			.enter()
 			.append("circle")
@@ -416,10 +432,10 @@
 				// employee size
 				return employeesScale(d.key);
 			})
-			.attr("stroke-width", function(d) {
-				// number of companies
-				return companiesScale(d.values.length);
-			})
+//			.attr("stroke-width", function(d) {
+//				// number of companies
+//				return companiesScale(d.values.length);
+//			})
 			.on("mouseover", showData)
 			.on("mouseout", hideData);
 			
@@ -440,7 +456,7 @@
 							.text(i)
 							.attr("x", "-60")
 							.attr("y", companies.indexOf(i)*16)
-							.attr("fill", "steelblue")
+							.attr("fill", "white")
 							.attr("transform", "translate(10,20)");
 						})
 					});
@@ -451,19 +467,22 @@
 				.attr("x", -employeesScale(d.key)+(.1*employeesScale(d.key)))
 				.attr("y", "-2")
 				.attr("fill", "steelblue");
+				//area
+				d3.select(this).attr("fill", "steelblue");
 				//radius
-				labels.append("line")
-				.style("stroke", "steelblue")
-				.attr("x1", -employeesScale(d.key))
-				.attr("y1","0")
-				.attr("x2", "0")
-				.attr("y2", "0");
+//				labels.append("line")
+//				.style("stroke", "steelblue")
+//				.attr("x1", -employeesScale(d.key))
+//				.attr("y1","0")
+//				.attr("x2", "0")
+//				.attr("y2", "0");
 			}
 			
 			function hideData(d) {
 				f3.selectAll("text").remove();
 				labels.selectAll("text").remove();
 				labels.selectAll("line").remove();
+				d3.select(this).attr("fill", backgroundColor);
 			}
 			
 		});
