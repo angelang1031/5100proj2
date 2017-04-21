@@ -64,9 +64,9 @@
 
 		<div class="fig3">
 			<div class="info">
-				<h3>SIZE</h3>
-				<h4>The majority of startups have at most 200 employees.</h4>
-				<p>Companies listed for each circle have at most <i>n</i> employees, where <i>n</i> is the number that appears when you hover over a circle. The radius of each circle represents the relative difference in company size between groups of companies. The width of each circumference is the relative amount of companies with <i>n</i> employees.</p>
+				<h3>Size by Employees</h3>
+				<h4>The majority of startups have between 50 and 500 employees.</h4>
+				<p>Companies listed for each circle have approximately <i>n</i> employees, where <i>n</i> is the number range that appears when you hover over a circle. The radius of each circle represents the relative difference in company size between groups of companies. Difference in color saturation compares the amount of companies within each group.</p>
 			</div>
 			<svg id="fig3"></svg>
 		</div>
@@ -453,7 +453,7 @@
 		
 		/* BEGIN FIGURE 3 */
 		// scales
-		var employeesScale = d3.scaleSqrt().domain([0, 5000]).range([20, 400]);
+		var employeesScale = d3.scaleSqrt().domain([10, 5000]).range([20, 400]);
 		var companiesScale = d3.scaleLinear().domain([0, 53]).range([.2, 24]);
 		
 		var f3 = d3.select("#fig3").attr("width", width).attr("height", height).append("g").attr("transform", "translate(80,0)");
@@ -465,14 +465,13 @@
 		function parse(row) {
 			if (row.Employees) {
 				var dash = row.Employees.indexOf("-");
-				console.log(row.Employees);
 				row.Employees = parseFloat(row.Employees.slice(dash+1));
 				return row;
 			}
 		}
 		
 		// test load
-		var testData, testBySize;
+		var testData, testBySize, employmentSizes;
 		
 		d3.csv("100companies_employees.csv", function(error, data) {
 			if (error) { console.log(error); }
@@ -496,8 +495,11 @@
 			.key(function (d) { return d.Employees; })
 			.entries(rawData);
 			
+			reorderCompanies = [companiesBySize[0],companiesBySize[2],companiesBySize[1],companiesBySize[3],companiesBySize[4],companiesBySize[5]]
+			
+			
 			var circles = f3.selectAll("circle")
-			.data(companiesBySize)
+			.data(reorderCompanies)
 			.enter()
 			.append("circle")
 			.attr("cx", widthFloat/2)
@@ -518,6 +520,15 @@
 			var labels = f3.append("g")
 			.attr("transform", "translate("+widthFloat/2+","+height/2+")");
 			
+			function sizeExchange(empNumber){
+				testBySize.forEach(function(k){
+					if (k.key.includes(empNumber)) {
+						console.log(k.key);
+						return k.key;
+					}
+				});
+			}
+			
 			function showData(d) {
 				//companies
 				f3.append("text")
@@ -532,17 +543,17 @@
 							.text(i)
 							.attr("x", "-60")
 							.attr("y", companies.indexOf(i)*16)
-							.attr("fill", "white")
+							.attr("fill", "steelblue")
 							.attr("transform", "translate(10,20)");
 						})
 					});
 				//employees
 				labels.append("text")
-				.text(d.key)
+				.text(sizeExchange(d.key))
 				.style("font-size","14")
 				.attr("x", -employeesScale(d.key)+(.1*employeesScale(d.key)))
 				.attr("y", "-2")
-				.attr("fill", "steelblue");
+				.attr("fill", "white");
 				//area
 				d3.select(this).attr("fill", "steelblue");
 				//radius
