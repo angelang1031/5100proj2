@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 	<script src="uStates.js"></script>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 	<script src="http://d3js.org/topojson.v2.min.js"></script>
 	<script src="sankey.js"></script>
 	
@@ -23,7 +24,7 @@
 	<div class="main">
 		<div class="fig1">
 			<div class="info">
-				<h3>Location, Fund & Market </h3>
+				<h3>Location, Fund &amp; Market </h3>
 				<div>Key Markets:<br/>
 				<select id="select-list">
 				  <option value="v1">E-Commerce</option> 
@@ -39,8 +40,8 @@
 			<div id="tooltip"></div><!-- div to hold tooltip. -->
 			<svg width="75%" height="700" viewBox="0 0 960 600" id="fig1">
 			</svg>	
-
 		</div>
+		
 		<div id="fig2">
 			<div class="info">
 				<h3>Startup Talent Sources</h3>
@@ -56,22 +57,25 @@
 				<p>The <span>height</span> of each rectangle represents the number of startups.</p>
 				<p>Universities are classified into two categories: east and west coasts, and companies are grouped into three industries. Each category is represented with different <span>colors</span>.</p>
 				<p><span>Hover</span> to see all details.</p>
-
 			</div>
 			<div id="title"></div>
 			<svg id="university" width="75%" height="900" viewBox="0 0 960 900"></svg>
 		</div>
-
+		
 		<div class="fig3">
 			<div class="info">
 				<h3>Size by Employees</h3>
 				<h4>The majority of startups have between 50 and 500 employees.</h4>
-				<p>Companies listed for each circle have approximately <i>n</i> employees, where <i>n</i> is the number range that appears when you hover over a circle. The radius of each circle represents the relative difference in company size between groups of companies. Difference in color saturation compares the amount of companies within each group.</p>
+				<p>Companies listed for each circle have approximately <i>n</i> employees, where <i>n</i> is the number range that appears when you <b>hover over a circle</b>. The radius of each circle represents the relative difference in company size between groups of companies. Difference in color saturation compares the amount of companies within each group.</p>
 			</div>
 			<svg id="fig3"></svg>
 		</div>
 	</div>
-
+	
+	<div class="outro">
+		<hr/>
+		<p>The data for this website was collected from https://angel.co/companies</p>
+	</div>
 	
 	<script>
 		// globals
@@ -499,7 +503,7 @@
 		/* BEGIN FIGURE 3 */
 		// scales
 		var employeesScale = d3.scaleSqrt().domain([10, 5000]).range([20, 400]);
-		var companiesScale = d3.scaleLinear().domain([0, 53]).range([.2, 24]);
+		var companiesScale = d3.scaleLinear().domain([0, 53]).range([0, 1]);
 		
 		var f3 = d3.select("#fig3").attr("width", width).attr("height", height).append("g").attr("transform", "translate(80,0)");
 		
@@ -515,20 +519,6 @@
 			}
 		}
 		
-		// test load
-		var testData, testBySize, employmentSizes;
-		
-		d3.csv("100companies_employees.csv", function(error, data) {
-			if (error) { console.log(error); }
-			
-			testData = data;
-			
-			testBySize = d3.nest()
-			.key(function(d) {return d.Employees;})
-			.entries(testData);
-			
-		});
-		
 		// load data
 		
 		d3.csv("100companies_employees.csv", parse, function (error, data) {
@@ -542,36 +532,54 @@
 			
 			reorderCompanies = [companiesBySize[0],companiesBySize[2],companiesBySize[1],companiesBySize[3],companiesBySize[4],companiesBySize[5]]
 			
-			
 			var circles = f3.selectAll("circle")
 			.data(reorderCompanies)
 			.enter()
 			.append("circle")
 			.attr("cx", widthFloat/2)
 			.attr("cy", height/2)
-			.attr("fill", backgroundColor)
-			.attr("stroke", "steelblue")
+			.attr("stroke","white")
+			.attr("stroke-width","4")
 			.attr("r", function(d) {
 				// employee size
 				return employeesScale(d.key);
 			})
-//			.attr("stroke-width", function(d) {
-//				// number of companies
-//				return companiesScale(d.values.length);
-//			})
+			.attr("fill", function(d) {
+				// number of companies
+				return d3.interpolateBlues(companiesScale(d.values.length));
+			})
 			.on("mouseover", showData)
 			.on("mouseout", hideData);
 			
 			var labels = f3.append("g")
-			.attr("transform", "translate("+widthFloat/2+","+height/2+")");
+			.attr("transform", "translate("+widthFloat/2+","+20+")");
 			
 			function sizeExchange(empNumber){
-				testBySize.forEach(function(k){
-					if (k.key.includes(empNumber)) {
-						console.log(k.key);
-						return k.key;
-					}
-				});
+				var statement = "";
+				switch(empNumber) {
+					case "5000":
+						statement = "1001-5000+";
+						break;
+					case "1000":
+						statement = "501-1000";
+						break;
+					case "500":
+						statement = "201-500";
+						break;
+					case "200":
+						statement = "51-200";
+						break;
+					case "50":
+						statement = "11-50";
+						break;
+					case "10":
+						statement = "1-10";
+						break;
+					default:
+						statement = "No";
+						break;
+				}
+			return statement+" Employees";
 			}
 			
 			function showData(d) {
@@ -588,7 +596,7 @@
 							.text(i)
 							.attr("x", "-60")
 							.attr("y", companies.indexOf(i)*16)
-							.attr("fill", "steelblue")
+							.attr("fill", "#EF626C")
 							.attr("transform", "translate(10,20)");
 						})
 					});
@@ -596,11 +604,13 @@
 				labels.append("text")
 				.text(sizeExchange(d.key))
 				.style("font-size","14")
-				.attr("x", -employeesScale(d.key)+(.1*employeesScale(d.key)))
-				.attr("y", "-2")
-				.attr("fill", "white");
+				.attr("x", "0")
+				.attr("y", "0")
+				.attr("text-anchor","middle")
+				.attr("fill", "#EF626C");
 				//area
-				d3.select(this).attr("fill", "steelblue");
+				d3.select(this)
+				.attr("stroke", "#EF626C");
 				//radius
 //				labels.append("line")
 //				.style("stroke", "steelblue")
@@ -614,7 +624,11 @@
 				f3.selectAll("text").remove();
 				labels.selectAll("text").remove();
 				labels.selectAll("line").remove();
-				d3.select(this).attr("fill", backgroundColor);
+				d3.select(this)
+				.attr("stroke","white")
+				.attr("fill", function(d) {
+				return d3.interpolateBlues(companiesScale(d.values.length));
+				});
 			}
 			
 		});
