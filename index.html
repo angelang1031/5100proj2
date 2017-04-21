@@ -59,7 +59,7 @@
 				<p><span>Hover</span> to see all details.</p>
 			</div>
 			<div id="title"></div>
-			<svg id="university" width="75%" height="900" viewBox="0 0 960 900"></svg>
+			<svg id="university" width="75%" height="800" viewBox="0 0 960 850"></svg>
 		</div>
 		
 		<div class="fig3">
@@ -424,11 +424,11 @@
         	logo_node.append("image")
         			 .attr("xlink:href", function(d){return inputLogos[d.name.substring(2)];})
         			 .attr("width", sankey.nodeWidth())
-        			 .attr("height", 40
+        			 .attr("height", 30
         			 	//function(d) {return d.dy;}
         			 	)
         			 .attr("x", -45)
-        			 .attr("y", function(d) {return -d.dy});
+        			 .attr("y", function(d) {return -d.dy/2});
 
         
 
