@@ -44,18 +44,18 @@
 		<div id="fig2">
 			<div class="info">
 				<h3>Startup Talent Sources</h3>
-				<div>Please choose:<br/>
+				<div>Team From:<br/>
 				<select id="select">
 				  <option value="0">Top Universities</option> 
 				  <option value="1">Top Companies</option>
 				</select>
 				</div>
-				<h4>Top Startup talent sources: UC Berkeley, Standford University, Google, and Microsoft.</h4>
-				<p>The graph shows the number of startups with team members from a certain top university or major company, as well as the composition of total startups based on total funding raised.</p> 
-				<p>The <span>depth</span> of the rectangle represents the number of startups.</p>
-				<p>Pay attention to the " Team Source". Universities are classified into two categories: east and west coasts, and companies are grouped into three industries. Each category is represented with different <span>colors</span>.</p>
-				<p><span>Click</span> to see all all the links.<br>
-				   <span>Hover</span> to see all details.</p>
+				<h4>Over 70% of startups have funding less than 10 million.<br><br>
+				    Top Startup talent sources: UC Berkeley, Standford University, Google, and Microsoft.  </h4>
+				<p>The graph shows the number of startups with team members from a certain top university or major company and the composition of total startups in terms of total money raised.</p> 
+				<p>The <span>height</span> of each rectangle represents the number of startups.</p>
+				<p>Universities are classified into two categories: east and west coasts, and companies are grouped into three industries. Each category is represented with different <span>colors</span>.</p>
+				<p><span>Hover</span> to see all details.</p>
 
 			</div>
 			<div id="title"></div>
@@ -222,20 +222,22 @@
 		}
 
 		/*BEGIN FIGURE 2 */
-		var margin = {top: 100, right: 70, bottom: 50, left: 50};
+		/*D3 Sankey plugin
+		credit: https://github.com/d3/d3-sankey*/
+		var margin = {top: 150, right: 70, bottom: 50, left: 50};
 		var S_width = 800,S_height = 600;
 
 		var formatNumber = d3.format(",.0f");    // zero decimal places
     	var	format = function(d) { return formatNumber(d) + " "; };
     	//var color = d3.scaleOrdinal(d3.schemeCategory20);
     	var color = d3.scaleOrdinal().domain(['t','e','w','i','c','f'])
-    	                             .range(["#FFD700", "#FF0000","#4169E1","#984ea3","#ff7f00","#DC143C"]);
+    	                             .range(["#FFD700", "#2ECC71","#4169E1","#984ea3","#ff7f00","#DC143C"]);
     	
 
 		// Set the sankey diagram properties
 		var sankey = d3.sankey()
     				.nodeWidth(40)
-    				.nodePadding(20)
+    				.nodePadding(40)
     				.size([S_width, S_height]);
 
 		var path = sankey.link();
@@ -292,6 +294,30 @@
 		}
 		var datasets = ["teams.csv","companies.csv"];
 		var info = [["East Coast University","West Coast University"],["IT Firm","Consulting Firm","Financial Firm"]];
+		var uni_logos = {"Standford": "https://identity.stanford.edu/overview/images/emblems/ug_s-tree-ex2.png",
+						"UC Berkeley": "http://brand.berkeley.edu/wp-content/uploads/2016/10/ucbseal_139_540.png",
+					    "NYU": "http://www.trybuch.com/5/img/resume/trybuch_resume_nyu.gif",
+						"MIT": "https://upload.wikimedia.org/wikipedia/en/thumb/4/44/MIT_Seal.svg/1028px-MIT_Seal.svg.png",
+						"USC": "https://s-media-cache-ak0.pinimg.com/originals/2c/4d/4c/2c4d4c06b812e89906a59bbdd1f5af44.jpg",
+						"UCLA": "https://d1fy1ym40biffm.cloudfront.net/images/logos/teams/1a19464e009b4e6b5a192f986bb1439411fbbf7476397d23ec0d54cee2df74e1.png",
+						"Cornell": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Cornell_University_seal.svg/2000px-Cornell_University_seal.svg.png",
+						"Columbia": "http://entrepreneurship.columbia.edu/wp-content/uploads/2016/11/Web-CC_crown_darkblue.png",
+					    "Harvard":"https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/Harvard_Wreath_Logo_1.svg/1051px-Harvard_Wreath_Logo_1.svg.png"};
+
+		var com_logos = {"Microsoft": "http://diylogodesigns.com/blog/wp-content/uploads/2016/04/Microsoft-Logo-icon-png-Transparent-Background.png",
+						 "Google": "http://diylogodesigns.com/blog/wp-content/uploads/2016/04/google-logo-icon-PNG-Transparent-Background.png",
+						 "IBM": "http://pngimg.com/uploads/ibm/ibm_PNG19650.png",
+						 "Oracle": "https://americascup-images.s3.amazonaws.com/original/m1451_oracle.png",
+						 "Apple": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1000px-Apple_logo_black.svg.png",
+						 "Facebook": "http://img.clipartall.com/facebook-icon-circle-vector-facebook-logo-512_512.png",
+						 "Mckinsey&Company":"https://ripple.com/wp-content/uploads/2015/10/mckinsey_mark.png",
+						 "Intel": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Intel-logo.svg/2000px-Intel-logo.svg.png",
+						 "Goldman Sachs": "http://www.pngpix.com/wp-content/uploads/2016/07/PNGPIX-COM-Goldman-Sachs-Logo-PNG-Transparent.png",
+						 "Morgan Stanley": "http://yourbestforward.com/wp-content/uploads/2015/12/morganstanley-logo.png",
+						 "Deloitte Consulting": "https://www.obis.ethz.ch/wp-content/uploads/2015/05/Deloitte.png",
+						 "Amazon":"http://www.userlogos.org/files/amazon-logo-png.png?1471465514"};
+			//console.log(logos);
+		var logos = [uni_logos,com_logos];
 
 		// load the data and plot figure
 		var choice = d3.select("#select");
@@ -300,25 +326,26 @@
 			var index = choice.property("value");
 			console.log(index);
 			var inputData = datasets[index];
-			showSankey(inputData);
+			var inputLogos = logos[index];
+			showSankey(inputData,inputLogos);
 		})
 
 		// default graph
-		showSankey("teams.csv");
+		showSankey("teams.csv",logos[0]);
 		
-		function showSankey(inputData){
+		function showSankey(inputData, inputLogos){
 			d3.csv(inputData, function(error, data) {
     
     		var graph = prepareData(data);
 
     		sankey.nodes(graph.nodes)
           		  .links(graph.links)
-          		  .layout(0);
-
+          		  .layout(0)
     		console.log(graph.links);
 
 
     		var svg_uni = d3.select("#university");
+    		
     		// plot the graph
     		// add in the links
     		var link = svg_uni.append("g").selectAll(".link")
@@ -327,13 +354,15 @@
                       .attr("class", "link")
                       .attr("d", path)
                       .style("stroke-width", function(d) { return Math.max(1, d.dy); })
-                      .style("display","none")
+                      //.style("display","none")
                       .attr("transform", "translate("+margin.right + ","+ margin.top+")")
                       .on("mouseover", function(d){
                       		d3.select("#title").transition().duration(200).style("opacity", .9);      
       
             				d3.select("#title").html(function (){
-            					return "Number of Startups: " + format(d.value);});
+            					return "Number of Startups: " + format(d.value);})
+            				  .style("left", (d3.event.pageX) + "px")     
+              	              .style("top", (d3.event.pageY - 28) + "px");
             		});
 
             // add link titles **
@@ -342,28 +371,29 @@
                       // return format(d.value) + " startups with teammembers graduated from " + 
                           // d.target.name.substring(2); });
     		// add in the nodes
-    		var clickTwice = false;
+    		//var clickTwice = false;
     		var node = svg_uni.append("g").selectAll(".node")
                       .data(graph.nodes)
                       .enter().append("g")
                       .attr("class", "node")
                       .attr("transform", function(d) { 
                             var tran_x = d.x + margin.right;
-                            var tran_y = d.y + margin.top;
+                            var tran_y = d.y  + margin.top;
                             return "translate(" + tran_x + "," + tran_y + ")";
                         })
-                      .on("click", function(data){
-                              if(clickTwice){
+                      //.on("click", function(data){
+                      //        if(clickTwice){
                                   //var node = d;
-                                  var showLinks = d3.selectAll(".link").filter(function(d){return d.source==data || d.target==data;});
-                                  showLinks.style("display", "none");
-                                  clickTwice = false;
-                              }else {
+                        //          var showLinks = d3.selectAll(".link").filter(function(d){return d.source==data || d.target==data;});
+                          //        showLinks.style("display", "none");
+                            //      clickTwice = false;
+                              //}else {
                                   //node = d;
-                                  showLinks = d3.selectAll(".link").filter(function(d){return d.source==data || d.target==data;});
-                                  showLinks.style("display", null);
-                                  clickTwice = true;}
-                      });
+                                //  showLinks = d3.selectAll(".link").filter(function(d){return d.source==data || d.target==data;});
+                                  //showLinks.style("display", null);
+                                  //clickTwice = true;}
+                      //})
+                      ;
 
     		// add the rectangles for the nodes
     		node.append("rect")
@@ -371,19 +401,34 @@
         		.attr("width", sankey.nodeWidth())
        			.style("fill",
        			function(d) { 
-                	return d.color = color(d.name.substring(0,2)); 
+                	return d.color = color(d.name.substring(0,1)); 
         	}
         	)
         		.on("mouseover", function(d) {
             		d3.select("#title").transition().duration(200).style("opacity", .9);      
       
             		d3.select("#title").html(function (){
-              				return  "<span>" + d.name.substring(2)+ "</span>" + "<br>"+ "Number of Startups: " + d.value;
+              				return  "<span>" + d.name.substring(2).toUpperCase()+ "</span>" + "<br>"+ "Number of Startups: " + d.value;
               			})  
               	.style("left", (d3.event.pageX) + "px")     
               	.style("top", (d3.event.pageY - 28) + "px");
 
-        	})
+        	});
+
+        	var logo_node = d3.selectAll(".node").filter(function(d) {return d.x == 0;});
+        	console.log(logo_node);
+        	logo_node.append("image")
+        			 .attr("xlink:href", function(d){return inputLogos[d.name.substring(2)];})
+        			 .attr("width", sankey.nodeWidth())
+        			 .attr("height", 40
+        			 	//function(d) {return d.dy;}
+        			 	)
+        			 .attr("x", -45)
+        			 .attr("y", function(d) {return -d.dy});
+
+        
+
+    		
 
         	// function for displaying legend
         	function showLegend(inputInfo) {
@@ -396,7 +441,7 @@
 			  		.attr("x",function(d,i){
 			  		//return 900 -40-40-140*(inputInfo.length-i-1)
 			  		return 70 + 180*i;})
-			  		.attr("y",750)
+			  		.attr("y",20)
 			  		.attr("width",40)
 			  		.attr("height",20)
 			  		.style("fill", function(d){return color(d.substring(0,1).toLowerCase());});
@@ -407,7 +452,7 @@
 			  		.text(function(d) {return d;})
 			  		.attr("text-anchor", "middle")
 			  		.attr("font-size", 13)
-			  		.attr("y",800)
+			  		.attr("y",60)
 			  		.attr("x", function(d,i)
 			  						{//return 900 -60-140*(inputInfo.length-i-1)
 			  						 return 90 + 180*i;});
@@ -428,7 +473,7 @@
           				.attr("class", "label")
                       	.attr("transform", function(d,i) { 
                             var tran_x = 30 + 380 * i;
-                            return "translate(" + tran_x + "," + "30" + ")";
+                            return "translate(" + tran_x + "," + "80" + ")";
                         })
 
     		label.append("rect")
