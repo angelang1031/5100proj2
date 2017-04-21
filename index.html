@@ -274,10 +274,10 @@
         	nodesArray.push(d.name);
     		});
 
-    		console.log(nodesArray);
+    		//console.log(nodesArray);
             
     		graph.nodes = removeDuplicates(nodesArray);
-    		console.log(graph.nodes);
+    		//console.log(graph.nodes);
             
     		// loop through each link replacing the text with its index from node
     		graph.links.forEach(function (d, i) {
@@ -324,7 +324,7 @@
 		choice.on("change", function(){
 			d3.selectAll("#university > *").remove();
 			var index = choice.property("value");
-			console.log(index);
+			//console.log(index);
 			var inputData = datasets[index];
 			var inputLogos = logos[index];
 			showSankey(inputData,inputLogos);
@@ -341,7 +341,7 @@
     		sankey.nodes(graph.nodes)
           		  .links(graph.links)
           		  .layout(0)
-    		console.log(graph.links);
+    		//console.log(graph.links);
 
 
     		var svg_uni = d3.select("#university");
@@ -416,7 +416,7 @@
         	});
 
         	var logo_node = d3.selectAll(".node").filter(function(d) {return d.x == 0;});
-        	console.log(logo_node);
+        	//console.log(logo_node);
         	logo_node.append("image")
         			 .attr("xlink:href", function(d){return inputLogos[d.name.substring(2)];})
         			 .attr("width", sankey.nodeWidth())
