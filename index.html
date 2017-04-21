@@ -498,8 +498,6 @@
 		}
 
 
-
-		
 		/* BEGIN FIGURE 3 */
 		// scales
 		var employeesScale = d3.scaleSqrt().domain([10, 5000]).range([20, 400]);
@@ -520,7 +518,6 @@
 		}
 		
 		// load data
-		
 		d3.csv("100companies_employees.csv", parse, function (error, data) {
 			if (error) { console.log(error); }
 			
@@ -611,15 +608,7 @@
 				//area
 				d3.select(this)
 				.attr("stroke", "#EF626C");
-				//radius
-//				labels.append("line")
-//				.style("stroke", "steelblue")
-//				.attr("x1", -employeesScale(d.key))
-//				.attr("y1","0")
-//				.attr("x2", "0")
-//				.attr("y2", "0");
 			}
-			
 			function hideData(d) {
 				f3.selectAll("text").remove();
 				labels.selectAll("text").remove();
@@ -630,7 +619,6 @@
 				return d3.interpolateBlues(companiesScale(d.values.length));
 				});
 			}
-			
 		});
 		
 		
